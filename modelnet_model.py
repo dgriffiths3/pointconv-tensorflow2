@@ -54,8 +54,8 @@ class PointConvModel(keras.Model):
         self.dropout1 = keras.layers.Dropout(0.4)
 
         self.dense2 = keras.layers.Dense(256, activation=self.activation)
-        self.dropout1 = keras.layers.Dropout(0.4)
-        
+        self.dropout2 = keras.layers.Dropout(0.4)
+
         self.dense3 = keras.layers.Dense(self.num_classes, activation=tf.nn.softmax)
 
 

@@ -9,7 +9,7 @@ from tensorflow import keras
 
 from modelnet_model import PointConvModel
 
-tf.random.set_seed(42)
+tf.random.set_seed(1234)
 
 
 def load_dataset(in_file, batch_size):
@@ -55,9 +55,14 @@ def train():
     val_ds = load_dataset(config['val_ds'], config['batch_size'])
 
     callbacks = [
-        keras.callbacks.ReduceLROnPlateau(patience=10, min_lr=1e-6),
-        keras.callbacks.TensorBoard(log_dir='./logs/{}'.format(config['log_dir']), update_freq=50),
-        keras.callbacks.ModelCheckpoint('./logs/{}/model/weights'.format(config['log_dir']), save_best_only=True)
+        keras.callbacks.ReduceLROnPlateau(
+            patience=10, min_lr=1e-6),
+        keras.callbacks.EarlyStopping(
+            'val_sparse_categorical_accuracy', min_delta=0.1, patience=3),
+        keras.callbacks.TensorBoard(
+            './logs/{}'.format(config['log_dir']), update_freq=50),
+        keras.callbacks.ModelCheckpoint(
+            './logs/{}/model/weights'.format(config['log_dir']), 'val_sparse_categorical_accuracy', save_best_only=True)
     ]
 
     model.build((config['batch_size'], 8192, 3))
