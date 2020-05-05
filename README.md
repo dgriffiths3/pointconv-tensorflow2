@@ -59,7 +59,7 @@ class MyModel(keras.Model):
     return pred
 ```
 
-A full working example of an implemented model can be found in `modelnet_model.py`. To run, first download the training data from [here]() and place in a folder called `data`. Configure the `config` dictionary to point to where you have saved it. Once the `config` is set, start the training with:
+A full working example of an implemented model can be found in `modelnet_model.py`. To run, first download the training data from [here](https://drive.google.com/drive/folders/1v5B68RHgDI95KM4EhDrRJxLacJAHcoxz) and place in a folder called `data`. Configure the `config` dictionary to point to where you have saved it. Once the `config` is set, start the training with:
 
 ```
 python train_modelnet.py
