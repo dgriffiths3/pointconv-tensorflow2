@@ -4,10 +4,9 @@ import sys
 sys.path.insert(0, './')
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-import tensorflow as tf
+from model_scannet import PointConvModel
 from tensorflow import keras
-
-from model_modelnet import PointConvModel
+import tensorflow as tf
 
 tf.random.set_seed(1234)
 
@@ -23,7 +22,7 @@ def load_dataset(in_file, batch_size):
 
         in_features = {
             'points': tf.io.FixedLenFeature([n_points * 3], tf.float32),
-            'label': tf.io.FixedLenFeature([1], tf.int64)
+            'labels': tf.io.FixedLenFeature([n_points], tf.int64)
         }
 
         return tf.io.parse_single_example(data_record, in_features)
@@ -31,12 +30,16 @@ def load_dataset(in_file, batch_size):
     def _preprocess_fn(sample):
 
         points = sample['points']
-        label = sample['label']
+        labels = sample['labels']
 
         points = tf.reshape(points, (n_points, 3))
-        points = tf.random.shuffle(points)
+        labels = tf.reshape(labels, (n_points, 1))
 
-        return points, label
+        shuffle_idx = tf.range(points.shape[0])
+        points = tf.gather(points, shuffle_idx)
+        labels = tf.gather(labels, shuffle_idx)
+
+        return points, labels
 
     dataset = tf.data.TFRecordDataset(in_file)
     dataset = dataset.shuffle(shuffle_buffer)
@@ -53,7 +56,7 @@ def train():
 
     train_ds = load_dataset(config['train_ds'], config['batch_size'])
     val_ds = load_dataset(config['val_ds'], config['batch_size'])
-
+    
     callbacks = [
         keras.callbacks.EarlyStopping(
             'val_sparse_categorical_accuracy', min_delta=0.1, patience=3),
@@ -74,24 +77,24 @@ def train():
 
     model.fit(
         train_ds,
-        validation_data = val_ds,
-        validation_steps = 10,
-        validation_freq = 1,
-        callbacks = callbacks,
-        epochs = 100,
-        verbose = 1
+        validation_data=val_ds,
+        validation_steps=10,
+        validation_freq=1,
+        callbacks=callbacks,
+        epochs=100,
+        verbose=1
     )
 
 
 if __name__ == '__main__':
 
     config = {
-        'train_ds' : './data/modelnet/train.tfrecord',
-        'val_ds' : './data/modelnet/val.tfrecord',
-        'batch_size' : 8,
-        'lr' : 1e-3,
-        'bn' : False,
-        'log_dir' : 'modelnet_1'
+        'train_ds': './data/scannet_train.tfrecord',
+        'val_ds': './data/scannet_val.tfrecord',
+        'batch_size': 4,
+        'lr': 1e-3,
+        'bn': False,
+        'log_dir': 'scannet_2'
     }
 
     train()

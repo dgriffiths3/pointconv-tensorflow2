@@ -9,11 +9,11 @@ This repository containts implementations of the PointConv (Wu et al, 2019) feat
 Requirements:
 
 ```
-cuda == 10.1
-tensorflow >= 2.2.0+
 python >= 3.6
+tensorflow >= 2.2+
+cuda == 10.1
 ```
-> Note: This repository uses the `train_step` model override which is new for `tensorflow 2.2.0`, as such it is important your tensorflow is not an older version. 
+> Note: This repository uses the `train_step` model override which is new for `tensorflow 2.2.0`, as such if you wish to use the provided training scripts it is important your tensorflow is not an older version. The layers will work for tensorflow 2.0+.
 
 
 To compile the C++ tensorflow ops, first ensure the `CUDA_ROOT` path in `tf_ops/compile_ops.sh` points correctly to your cuda folder and then compile the ops with:
@@ -61,10 +61,16 @@ class MyModel(keras.Model):
     return pred
 ```
 
-A full working example of an implemented model can be found in `modelnet_model.py`. To run, first download the training data from [here](https://drive.google.com/drive/folders/1v5B68RHgDI95KM4EhDrRJxLacJAHcoxz) and place in a folder called `data`. Configure the `config` dictionary to point to where you have saved it. Once the `config` is set, start the training with:
+A full working example of an implemented model for classification and point-wise semantic segmentation can be found in `model_modelnet.py` and `model_scannet.py` respectively. To run, first download the training data from [here](https://drive.google.com/drive/folders/1v5B68RHgDI95KM4EhDrRJxLacJAHcoxz) and place in a folder called `data`. Configure the `config` dictionary to point to where you have saved it. Once the `config` is set, start the training with:
 
 ```
 python train_modelnet.py
+```
+
+or:
+
+```
+python train_scannet.py
 ```
 
 If the config is left to the default you can view training logs with:

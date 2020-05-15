@@ -13,7 +13,8 @@ from .cpp_modules import (
 	farthest_point_sample,
 	gather_point,
 	query_ball_point,
-	group_point
+	group_point,
+    three_nn
 )
 
 def knn_kdtree(nsample, xyz, new_xyz):

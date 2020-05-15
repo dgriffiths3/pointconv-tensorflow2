@@ -59,7 +59,7 @@ class PointConvModel(keras.Model):
         self.dense3 = keras.layers.Dense(self.num_classes, activation=tf.nn.softmax)
 
 
-    def forward_pass(self, input, training=True):
+    def forward_pass(self, input, training):
 
         xyz, points = self.layer1(input, None, training=training)
         xyz, points = self.layer2(xyz, points, training=training)
@@ -82,7 +82,7 @@ class PointConvModel(keras.Model):
 
         with tf.GradientTape() as tape:
 
-            pred = self.forward_pass(input[0])
+            pred = self.forward_pass(input[0], True)
             loss = self.compiled_loss(input[1], pred)
 
         gradients = tape.gradient(loss, self.trainable_variables)
@@ -95,7 +95,7 @@ class PointConvModel(keras.Model):
 
     def test_step(self, input):
 
-        pred = self.forward_pass(input[0])
+        pred = self.forward_pass(input[0], False)
         loss = self.compiled_loss(input[1], pred)
 
         self.compiled_metrics.update_state(input[1], pred)
@@ -103,6 +103,6 @@ class PointConvModel(keras.Model):
         return {m.name: m.result() for m in self.metrics}
 
 
-    def call(self, input, training=True):
+    def call(self, input, training=False):
 
         return self.forward_pass(input, training)
