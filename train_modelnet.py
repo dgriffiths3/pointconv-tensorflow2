@@ -86,8 +86,8 @@ def train():
 if __name__ == '__main__':
 
     config = {
-        'train_ds' : './data/modelnet/train.tfrecord',
-        'val_ds' : './data/modelnet/val.tfrecord',
+        'train_ds' : './data/modelnet_train.tfrecord',
+        'val_ds' : './data/modelnet_val.tfrecord',
         'batch_size' : 8,
         'lr' : 1e-3,
         'bn' : False,
